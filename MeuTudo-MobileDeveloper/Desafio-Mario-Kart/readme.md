@@ -101,3 +101,11 @@
 
 <input type="checkbox" id="vitoria-item" />
 <label for="vitoria-item">Ao final, vence quem acumulou mais pontos.</label>
+
+<h3>🆕 Melhorias adicionadas</h3>
+
+<ul>
+  <li><b>Torneio completo</b>: em vez de apenas uma corrida entre dois personagens, agora é possível simular um torneio com todos os personagens competindo entre si.</li>
+  <li><b>Funções reaproveitáveis e organizadas</b>: o código foi modularizado para facilitar a manutenção e a escalabilidade do projeto.</li>
+  <li><b>Lógica de confrontos mais justa</b>: agora, jogadores não podem perder pontos se já estiverem com 0, evitando pontuações negativas injustas.</li>
+</ul>

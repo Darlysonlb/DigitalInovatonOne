@@ -102,7 +102,7 @@
 <input type="checkbox" id="vitoria-item" />
 <label for="vitoria-item">Ao final, vence quem acumulou mais pontos.</label>
 
-<h3>🆕 Melhorias adicionadas</h3>
+<h3>🆕 Melhorias adicionadas com ajuda do GPT</h3>
 
 <ul>
   <li><b>Torneio completo</b>: em vez de apenas uma corrida entre dois personagens, agora é possível simular um torneio com todos os personagens competindo entre si.</li>

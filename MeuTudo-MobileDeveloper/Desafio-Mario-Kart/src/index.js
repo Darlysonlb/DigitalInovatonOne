@@ -1,44 +1,54 @@
-const player1 = {
-    NOME: "Mario",
-    VELOCIDADE: 4,
-    MANOBRABILIDADE: 3,
-    PODER: 3,
-    PONTOS: 0,
-}
-const player2 = {
-    NOME: "Luigi",
-    VELOCIDADE: 3,
-    MANOBRABILIDADE: 4,
-    PODER: 4,
-    PONTOS: 0,
-}
-const player3 = {
-    NOME: "Peach",
-    VELOCIDADE: 3,
-    MANOBRABILIDADE: 4,
-    PODER: 2,
-    PONTOS: 0,
-}
-const player4 = {
-    NOME: "Bowser",
-    VELOCIDADE: 5,
-    MANOBRABILIDADE: 2,
-    PODER: 5,
-    PONTOS: 0,
-}
-const player5 = {
-    NOME: "Donkey Kong",
-    VELOCIDADE: 2,
-    MANOBRABILIDADE: 2,
-    PODER: 5,
-    PONTOS: 0,
-}
-const player6 = {
-    NOME: "Yoshi",
-    VELOCIDADE: 2,
-    MANOBRABILIDADE: 4,
-    PODER: 3,
-    PONTOS: 0,
+const readline = require('readline').createInterface({
+    input: process.stdin,
+    output: process.stdout
+})
+const jogadores = [
+    {
+        NOME: "Mario",
+        VELOCIDADE: 4,
+        MANOBRABILIDADE: 3,
+        PODER: 3,
+        PONTOS: 0,
+    },
+    {
+        NOME: "Luigi",
+        VELOCIDADE: 3,
+        MANOBRABILIDADE: 4,
+        PODER: 4,
+        PONTOS: 0,
+    },
+    {
+        NOME: "Peach",
+        VELOCIDADE: 3,
+        MANOBRABILIDADE: 4,
+        PODER: 2,
+        PONTOS: 0,
+    },
+    {
+        NOME: "Bowser",
+        VELOCIDADE: 5,
+        MANOBRABILIDADE: 2,
+        PODER: 5,
+        PONTOS: 0,
+    },
+    {
+        NOME: "Donkey Kong",
+        VELOCIDADE: 2,
+        MANOBRABILIDADE: 2,
+        PODER: 5,
+        PONTOS: 0,
+    },
+    {
+        NOME: "Yoshi",
+        VELOCIDADE: 2,
+        MANOBRABILIDADE: 4,
+        PODER: 3,
+        PONTOS: 0,
+    },
+]
+
+function clonePlayer(player) {
+    return { ...player, PONTOS: 0 }
 }
 
 async function rollDice() {
@@ -132,15 +142,55 @@ async function declareWinner(character1, character2) {
 
     if (character1.PONTOS > character2.PONTOS) {
         console.log(`\n${character1.NOME} Venceu a corrida! 🏆`)
+        return character1
     } else if (character2.PONTOS > character1.PONTOS) {
         console.log(`\n${character2.NOME} Venceu a corrida! 🏆`)
+        return character2
     } else {
         console.log("A corrida terminou em empate!")
+        return Math.random() < 0.5 ? character1 : character2
     }
 }
-(async function main() {
-    console.log(`🏁🚨 Corrida entre ${player1.NOME} e ${player2.NOME} começando...\n`
-    );
-    await playRaceEngine(player1, player2)
-    await declareWinner(player1, player2)
-})()
+
+async function tournament(selecPlayers) {
+    let players = selecPlayers.map(clonePlayer)
+    let allPlayers = [...players]
+
+    while (players.length > 1) {
+        let winners = []
+        for (let i = 0; i < players.length; i += 2) {
+            const player1 = players[i]
+            const player2 = players[i + 1]
+            console.log(`\n🚦 Corrida emtre ${player1.NOME} vs ${player2.NOME}`);
+            await playRaceEngine(player1, player2)
+            const winner = await declareWinner(player1, player2)
+            winners.push(winner)
+        }
+        players = winners
+    }
+    console.log(`\n 🏁🏁🏁 Campeão do Torneio: ${players[0].NOME}`)
+
+    return allPlayers
+}
+
+function choosePlayers() {
+    console.log("🏎 Jogadores disponíveis: ")
+    jogadores.forEach((j, i) => console.log(`${i + 1}. ${j.NOME}`))
+
+    readline.question("\nDigite os números dos 4 competidores separados por vígula (ex: 1,3,4,5) ", async (resposta) => {
+        const index = resposta.split(',').map(n => parseInt(n.trim()) - 1)
+        if (index.length !== 4 || index.some(i => isNaN(i) || i < 0 || i >= jogadores.length)) {
+            console.log("❌ Jogador inválido. Tente novamente.")
+            readline.close()
+            return
+        }
+        const selected = index.map(i => jogadores[i])
+        const finalResults = await tournament(selected)
+        console.log("\n Classificação Final:")
+        finalResults.sort((a, b) => b.PONTOS - a.PONTOS).forEach(j =>
+            console.log(`${j.NOME}: ${j.PONTOS} ponto(s)`)
+        )
+        readline.close()
+    })
+}
+choosePlayers();
